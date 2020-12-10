@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 # Scrapy settings for woaidu_crawler project
 import os
@@ -14,19 +14,19 @@ NEWSPIDER_MODULE = 'sunshine.spiders'
 DOWNLOAD_DELAY = 1
 CONCURRENT_ITEMS = 100
 CONCURRENT_REQUESTS = 16
-#The maximum number of concurrent (ie. simultaneous) requests that will be performed to any single domain.
+# The maximum number of concurrent (ie. simultaneous) requests that will be performed to any single domain.
 CONCURRENT_REQUESTS_PER_DOMAIN = 8
 CONCURRENT_REQUESTS_PER_IP = 0
 DEPTH_LIMIT = 0
 DEPTH_PRIORITY = 0
 DNSCACHE_ENABLED = True
-#DUPEFILTER_CLASS = 'scrapy.dupefilter.RFPDupeFilter'
-#SCHEDULER = 'scrapy.core.scheduler.Scheduler'
+# DUPEFILTER_CLASS = 'scrapy.dupefilter.RFPDupeFilter'
+# SCHEDULER = 'scrapy.core.scheduler.Scheduler'
 
-#AutoThrottle extension
+# AutoThrottle extension
 AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_START_DELAY = 3.0
-AUTOTHROTTLE_CONCURRENCY_CHECK_PERIOD = 10#How many responses should pass to perform concurrency adjustments.
+AUTOTHROTTLE_CONCURRENCY_CHECK_PERIOD = 10 # How many responses should pass to perform concurrency adjustments.
 
 # XXX:scrapy's item pipelines have orders!!!!!,it will go through all the pipelines by the order of the list;
 # So if you change the item and return it,the new item will transfer to the next pipeline.
@@ -34,20 +34,21 @@ AUTOTHROTTLE_CONCURRENCY_CHECK_PERIOD = 10#How many responses should pass to per
 # if you want to use shard mongodb,you need MongodbWoaiduBookFile and ShardMongodbPipeline
 # if you want to use single mongodb,you need WoaiduBookFile and SingleMongodbPipeline
 ITEM_PIPELINES = {
-    'sunshine.pipelines.mongodb.SingleMongodbPipeline':800
+    # 'sunshine.pipelines.mongodb.SingleMongodbPipeline': 800
     # 'sunshine.pipelines.final_test.FinalTestPipeline':800
+    'sunshine.pipelines.json.JsonPipeline': 800
 }
 
 COOKIES_ENABLED = False
 
 
 DOWNLOADER_MIDDLEWARES = {
-#    'article_spider.contrib.downloadmiddleware.google_cache.GoogleCacheMiddleware':50,
+    # 'article_spider.contrib.downloadmiddleware.google_cache.GoogleCacheMiddleware':50,
     # 'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
     # 'sunshine.contrib.downloadmiddleware.rotate_useragent.RotateUserAgentMiddleware':400,
 }
 
-#To make RotateUserAgentMiddleware enable.
+# To make RotateUserAgentMiddleware enable.
 USER_AGENT = ''
 
 DEFAULT_REQUEST_HEADERS = {

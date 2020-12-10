@@ -5,51 +5,18 @@
 
 __author__ = 'xujiang@baixing.com'
 
-import os
-import re
-import chardet
+import json
+import yagmail
 
-def parse_data():
-    cates = {}
-    f_item = None
-    with open('C:/Users/Administrator/Desktop/news_tensite_xml.dat', 'rb') as f:
-        for line in f:
-            print(line)
+msg = ''
+with open('/Users/jaxon/WorkSpace/spider-service/gaoxiaojob.json', 'r') as f:
+    data = json.load(f)
+    for e in data:
+        title = e.get('title')
+        url = e.get("url")
+        category = e.get('category')
+        content = e.get('content')
+        msg = msg+title+'\n'+url+'\n'+category+'\n'+content+'\n'+'-'*100
+yag = yagmail.SMTP(user='xu8888jiang@126.com', password='ZYCFWACYWJIYLZHI', host='smtp.126.com')
 
-
-def detect_file_encoding(file_path):
-    ''' 返回文件的编码 '''
-    f = open(file_path, 'rb')
-    data = f.read()
-    predict = chardet.detect(data)
-    f.close()
-    return predict['encoding']
-
-
-if __name__ == '__main__':
-    # detect file encode type
-    file_path = 'C:/Users/Administrator/Desktop/news_tensite_xml.dat'
-    print(detect_file_encoding(file_path))
-
-    # read file
-    f2 = open(file_path, encoding='GB2312', errors="ignore")
-    content2 = f2.read()
-    print (content2)
-    f2.close()
-
-    # write to text file
-    f = open('C:/Users/Administrator/Desktop\news_tensite_xml.txt', 'w', encoding='utf8')
-
-    # exact the text between <content> and  </content>
-    c = re.findall('<content>.*</content>', content2)
-    print("Length of list: %d" % len(c))
-    i = 0
-    for item in c:
-        b = item.replace('<content>', '')
-        b = b.replace('</content>', '')
-        f.write(str(b) + '\n')
-        i = i + 1
-        if i % 1000 == 0:
-            print("index: %d / %d" % (i, len(c)))
-
-    f.close()
+yag.send(to='360138359@qq.com', subject='Testing Yagmail', contents=msg)
