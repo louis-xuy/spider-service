@@ -3,3 +3,6 @@ logs/
 gaoxiaojob.json
 .vscode
 .history
+.idea/
+.vscode/
+*.pyc
