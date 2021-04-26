@@ -34,6 +34,7 @@ AUTOTHROTTLE_CONCURRENCY_CHECK_PERIOD = 10 # How many responses should pass to p
 # if you want to use shard mongodb,you need MongodbWoaiduBookFile and ShardMongodbPipeline
 # if you want to use single mongodb,you need WoaiduBookFile and SingleMongodbPipeline
 ITEM_PIPELINES = {
+<<<<<<< HEAD
     'sunshine.pipelines.excel.ExcelPipeline': 500
     # 'sunshine.pipelines.mongodb.SingleMongodbPipeline': 800
     # 'sunshine.pipelines.final_test.FinalTestPipeline':800
@@ -44,14 +45,30 @@ DOWNLOADER_MIDDLEWARES = {
     # 'article_spider.contrib.downloadmiddleware.google_cache.GoogleCacheMiddleware':50,
     # 'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
     # 'sunshine.contrib.middleware.random_proxy.RandomProxyMiddleware': 100,
+=======
+    # 'sunshine.pipelines.mongodb.SingleMongodbPipeline': 800
+    # 'sunshine.pipelines.final_test.FinalTestPipeline':800
+    'sunshine.pipelines.json.JsonPipeline': 800
+}
+
+COOKIES_ENABLED = False
+
+
+DOWNLOADER_MIDDLEWARES = {
+    # 'article_spider.contrib.downloadmiddleware.google_cache.GoogleCacheMiddleware':50,
+    # 'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
     # 'sunshine.contrib.downloadmiddleware.rotate_useragent.RotateUserAgentMiddleware':400,
 }
 
 # To make RotateUserAgentMiddleware enable.
 USER_AGENT = ''
 
+<<<<<<< HEAD
 HTTPERROR_ALLOWED_CODES = [400]
 
+=======
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 DEFAULT_REQUEST_HEADERS = {
     # 'Accept': '*/*',
     'Accept-Language': 'zh-CN,zh;q=0.8',
@@ -60,18 +77,30 @@ DEFAULT_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
 }
 
+<<<<<<< HEAD
 LOG_FILE = "/logs/scrapy.log"
 
 # STATS_CLASS = 'sunshine.statscol.graphite.RedisGraphiteStatsCollector'
 
 #PROXY_URL = 'http://127.0.0.1:5010'
 
+=======
+LOG_FILE = "logs/scrapy.log"
+
+# STATS_CLASS = 'sunshine.statscol.graphite.RedisGraphiteStatsCollector'
+
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 # GRAPHITE_HOST = '127.0.0.1'
 # GRAPHITE_PORT = 2003
 # GRAPHITE_IGNOREKEYS = []
 
+<<<<<<< HEAD
 SingleMONGODB_SERVER = "localhost"
 SingleMONGODB_PORT = 27017
+=======
+# SingleMONGODB_SERVER = "localhost"
+# SingleMONGODB_PORT = 27017
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 # SingleMONGODB_DB = "article_fs"
 #
 # GridFs_Collection = "article_file"
@@ -79,6 +108,7 @@ SingleMONGODB_PORT = 27017
 # SCHEDULER = "sunshine.redis.scheduler.Scheduler"
 # SCHEDULER_PERSIST = False
 # SCHEDULER_QUEUE_CLASS = 'sunshine.redis.queue.SpiderPriorityQueue'
+<<<<<<< HEAD
 
 MYEXT_ENABLED = True
 
@@ -90,3 +120,5 @@ MAIL_USER = 'xu8888jiang@126.com'
 #配置好smtp服务给的密码
 MAIL_PASS = 'ZYCFWACYWJIYLZHI'
 MAIL_SSL=True
+=======
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428

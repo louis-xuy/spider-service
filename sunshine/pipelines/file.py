@@ -6,14 +6,23 @@ import time
 import hashlib
 import shutil
 import urllib
+<<<<<<< HEAD
 from urllib.parse import urlparse
 from scrapy.extensions.debug import logger as log
+=======
+from urlparse import urlparse
+from scrapy import log
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 from twisted.internet import defer
 from sunshine.utils import color
 from scrapy.utils.misc import md5sum
 from collections import defaultdict
 from scrapy.utils.misc import arg_to_iter
+<<<<<<< HEAD
 from scrapy.pipelines.media import MediaPipeline
+=======
+from scrapy.contrib.pipeline.images import MediaPipeline
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 from sunshine.utils.select_result import list_first_item
 from scrapy.exceptions import NotConfigured, IgnoreRequest
 
@@ -131,7 +140,11 @@ class FilePipeline(MediaPipeline):
         if os.path.isabs(uri):  # to support win32 paths like: C:\\some\dir
             scheme = 'file'
         else:
+<<<<<<< HEAD
             scheme = urlparse(uri).scheme
+=======
+            scheme = urlparse.urlparse(uri).scheme
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 
         store_cls = self.STORE_SCHEMES[scheme]
         return store_cls(uri)
@@ -320,4 +333,8 @@ class FilePipeline(MediaPipeline):
                 else:
                     filename = urllib.unquote(guessname)
                 # print "url:","*"*30,filename
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
         return filename

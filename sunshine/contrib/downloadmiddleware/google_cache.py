@@ -1,6 +1,10 @@
 #!/usr/bin/python
 #-*-coding:utf-8-*-
 
+<<<<<<< HEAD
+=======
+from urlparse import urlparse
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 from scrapy.http import Request
 from scrapy.utils.python import WeakKeyCache
 
@@ -8,9 +12,13 @@ class GoogleCacheMiddleware(object):
     """
         this middleware allow spider to crawl the spicific domain url in google caches.
 
+<<<<<<< HEAD
         you can define the GOOGLE_CACHE_DOMAINS in settings,
         
         it is a list which you want to visit the google cache.Or you can define a google_cache_domains in your spider and it is as the highest priority.
+=======
+        you can define the GOOGLE_CACHE_DOMAINS in settings,it is a list which you want to visit the google cache.Or you can define a google_cache_domains in your spider and it is as the highest priority.
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
     """
     google_cache = 'http://webcache.googleusercontent.com/search?q=cache:'
 
@@ -18,6 +26,13 @@ class GoogleCacheMiddleware(object):
         self.cache = WeakKeyCache(self._cache_domains)
         self.cache_domains = cache_domains
 
+<<<<<<< HEAD
+=======
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings['GOOGLE_CACHE_DOMAINS'])
+
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
     def _cache_domains(self, spider):
         if hasattr(spider, 'google_cache_domains'):
             return spider.google_cache_domains
@@ -42,7 +57,12 @@ class GoogleCacheMiddleware(object):
       
     def process_response(self, request, response, spider):
 
+<<<<<<< HEAD
         if request.meta.get('google_cache', False):
             return response.replace(url=response.url[len(self.google_cache):])
+=======
+        if request.meta.get('google_cache',False):
+            return response.replace(url = response.url[len(self.google_cache):]) 
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 
         return response

@@ -15,7 +15,11 @@ class SingleMongodbPipeline(object):
 
     MONGODB_SERVER = "localhost"
     MONGODB_PORT = 27017
+<<<<<<< HEAD
     
+=======
+    MONGODB_DB = "article_fs"
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 
     def __init__(self):
         """
@@ -38,12 +42,16 @@ class SingleMongodbPipeline(object):
                     'localhost')
         cls.MONGODB_PORT = crawler.settings.getint('SingleMONGODB_PORT', 27017)
         cls.MONGODB_DB = crawler.settings.get('SingleMONGODB_DB', 'books_fs')
+<<<<<<< HEAD
         cls.MONGODB_TB = crawler.settings.get('SingleMONGODB_TB', 'article_detail')
+=======
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
         pipe = cls()
         pipe.crawler = crawler
         return pipe
 
     def process_item(self, item, spider):
+<<<<<<< HEAD
         if self.db[self.MONGODB_TB].find_one({'url': item['url']}):
             return None
         else:
@@ -69,3 +77,25 @@ class StockInfoMongodbPipeline(SingleMongodbPipeline):
         else:
             self.db[table].insert(dict(item))
             print('insert {} to mongo'.format(item['secu_code']))
+=======
+        article_detail = {
+            'source': item.get('source'),
+            'date': item.get('date', []),
+            'newsId': item.get('newsId', []),
+            'title': item.get('title', ''),
+            'contents': item.get('contents', ''),
+            'url': item.get('url', ''),
+            'comments': item.get('comments', []),
+            'time': item.get('time', ''),
+            'update_time': datetime.datetime.utcnow()
+        }
+
+        result = self.db['article_detail'].insert(article_detail)
+        # item["mongodb_id"] = str(result)
+
+        log.msg("Item %s wrote to MongoDB database %s/book_detail" %
+                (result, self.MONGODB_DB),
+                level=log.DEBUG,
+                spider=spider)
+        return item
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428

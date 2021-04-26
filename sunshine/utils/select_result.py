@@ -3,7 +3,11 @@
 
 import types
 from w3lib.html import remove_entities
+<<<<<<< HEAD
 from urllib.parse import urlparse,urljoin
+=======
+from urlparse import urlparse, urljoin
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 
 NULL = [None,'null']
 

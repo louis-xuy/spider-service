@@ -12,9 +12,15 @@ import requests
 
 import json
 import sys
+<<<<<<< HEAD
 from sunshine.utils import sqlitedb
 
 SES = sqlitedb.mydb.make_session()
+=======
+from sunshine.utils import db
+
+SES = db.mydb.make_session()
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 
 g_dc = 0
 g_fc = 0
@@ -53,7 +59,11 @@ def d(user_id):
     jj = json.loads(response.text)
     data = jj['data']
     r_following_cnt = 0
+<<<<<<< HEAD
     for user in SES.query(sqlitedb.User).filter_by(ID=user_id).limit(1):
+=======
+    for user in SES.query(db.User).filter_by(ID=user_id).limit(1):
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
         if 'name' in data and 'screen_name' in data:
             user.AREA = sg(data, 'area')
             user.FOLLOWERS_COUNT = sg(data, 'followers_count')
@@ -105,7 +115,11 @@ def t(user_id, page, cursor):
     jj = json.loads(response.text)
     for fo in jj['data']:
         if fo['is_verified'] == 1 and fo['user_id'] not in g_id_cache:
+<<<<<<< HEAD
             user = sqlitedb.User()
+=======
+            user = db.User()
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
             user.ID = fo['user_id']
             user.NAME = fo['name']
             user.ST = 0
@@ -129,7 +143,11 @@ def t(user_id, page, cursor):
 def routine(start):
     last_cursor = 0
     c = 0
+<<<<<<< HEAD
     for user in SES.query(sqlitedb.User).filter(sqlitedb.User.ID > start).filter_by(ST=0).limit(10):
+=======
+    for user in SES.query(db.User).filter(db.User.ID > start).filter_by(ST=0).limit(10):
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
         fc = d(user.ID)
         c += 1
         for i in range(int(fc / 20)):
@@ -143,7 +161,11 @@ g_id_cache = {}
 
 
 def load_cache():
+<<<<<<< HEAD
     for id in SES.query(sqlitedb.User.ID).all():
+=======
+    for id in SES.query(db.User.ID).all():
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
         g_id_cache[id] = 1
 
 
@@ -156,11 +178,19 @@ def main():
         routine(start)
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     user = sqlitedb.User()
+=======
+    user = db.User()
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
     user.ID = 102424244984
     user.NAME = '手机用户102424244984'
     user.ST = 0
     SES.add(user)
     SES.commit()
+<<<<<<< HEAD
     for user in SES.query(sqlitedb.User):
+=======
+    for user in SES.query(db.User):
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
         print('--',user.ID)

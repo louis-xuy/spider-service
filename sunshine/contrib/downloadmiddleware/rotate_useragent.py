@@ -2,7 +2,11 @@
 # -*-coding:utf-8-*-
 
 import random
+<<<<<<< HEAD
 from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+=======
+from scrapy.contrib.downloadermiddleware.useragent import UserAgentMiddleware
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 
 
 class RotateUserAgentMiddleware(UserAgentMiddleware):
@@ -55,4 +59,7 @@ class RotateUserAgentMiddleware(UserAgentMiddleware):
         ua = self._user_agent(spider)
         if ua:
             request.headers.setdefault('User-Agent', ua)
+<<<<<<< HEAD
         
+=======
+>>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
