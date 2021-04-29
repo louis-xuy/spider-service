@@ -7,14 +7,10 @@
 
 import html
 import json
-from datetime import datetime
-import pandas as pd
-import requests
-from urllib.parse import urlencode
-from sunshine.utils import timestamp_to_date, get_param,get_current_date, str_to_dict
+from sunshine.utils import timestamp_to_date, get_param,get_current_date
 from scrapy import Request, Spider
 from sunshine.items.items import wechatItem
-from sunshine.commands.read_wechat_cookie import ReadCookie
+
 
 class WechatSpider(Spider):
     name = 'wechat'

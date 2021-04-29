@@ -15,11 +15,10 @@ import math
 import h5py
 import pandas as pd
 from datetime import datetime
-from urllib.parse import urlencode
 
 import requests
 from scrapy import Request, Spider
-from sunshine.items.stockItems import StockDailyTrade,StockNewsItem
+from sunshine.spiders.stock.stockItems import StockDailyTrade, StockNewsItem
 
 
 def convert_date_to_int(dt):
@@ -248,94 +247,6 @@ class EastMoneyStockSpider(Spider):
             # else:
             #     self.sz_page = self.sz_page + 1
             #     yield Request(self.SZ_URL.format(self.sz_page), meta={'type': 'sz'}, callback=self.parse_item)
-
-
-
-class dailyStock163Spider1(Spider):
-    
-    
-    """历史行情数据获取"""
-
-    name = "stock_daily_163"
-    
-    def __init__(self, *args, **kwargs):
-        super(dailyStock163Spider1, self).__init__(*args, **kwargs)
-        
-        self.path = '/Users/jaxon/.rqalpha/bundle'
-        
-        self.genDayBar = GenerateDayBarTask()
-
-    def get_k_data_url(self, exchange, code, start, end):
-        return 'http://quotes.money.163.com/service/chddata.html?code={}{}&start={}&end={}'.format(
-            exchange, code, start, end)
-    
-    # 指定日期的话，是用来抓增量数据的
-    # 如果需要代理请打开
-    # @random_proxy
-    def yield_request(self, item, start_date=None, end_date=None):
-        data_path = self.path + '/stocks.csv'
-        if start_date:
-            start = start_date
-        else:
-            start = item['listed_date'].replace('-', '')
-
-        if end_date:
-            end = end_date
-        else:
-            end = datetime.today().strftime('%Y%m%d')
-
-        if item['exchange'] == 'XSHG':
-            exchange_flag = 0
-        else:
-            exchange_flag = 1
-        url = self.get_k_data_url(exchange_flag, item['order_book_id'].split('.')[0], start, end)
-        yield Request(url=url, meta={'path': data_path, 'item': item},
-                          callback=self.download_day_k_data)
-    
-    def start_requests(self):
-        item = getattr(self, "security_item", '')
-        start_date = getattr(self, "start_date")
-        end_date = getattr(self, "end_date")
-        
-        for item in get_security_list():
-            for request in self.yield_request(item):
-                yield request
-
-    def download_day_k_data(self, response):
-        print(response.url)
-        path = response.meta['path']
-        item = response.meta['item']
-        try:
-            # 已经保存的csv数据
-            if os.path.exists(path):
-                saved_df = pd.read_csv(path, dtype=str)
-            else:
-                saved_df = pd.DataFrame()
-            df = pd.read_csv(io.BytesIO(response.body), encoding='GB2312', na_values='None')
-            df['order_book_id'] = item['order_book_id']
-            # 指数数据
-            if item['type'] == 'index':
-                INDEX_FIELDS = ['order_book_id', 'date', 'low', 'open', 'close', 'preClose', 'high', 'volume', 'amount']
-                df = df.loc[:,
-                     ['order_book_id', '日期', '最低价', '开盘价', '收盘价', '前收盘', '最高价', '成交量', '成交金额']]
-                df.columns = INDEX_FIELDS
-            # 股票数据
-            else:
-                STOCK_FIELDS = ['order_book_id', 'date', 'open', 'close', 'high', 'low', 'pre_close', 'volume', 'amount', 'turnover']
-                
-                df = df.loc[:,['order_book_id', '日期', '开盘价', '收盘价', '最高价', '最低价', '前收盘', '成交量', '成交金额', '换手率']]
-                df.columns = STOCK_FIELDS
-                data_types_dict = {'open': float, 'close': float, 'high': float, 'low': float,'pre_close':float, 'volume': int,
-                                   'amount': float, 'turnover': float}
-                df = df.astype(data_types_dict)
-            
-            # 合并到当前csv中
-            saved_df = saved_df.append(df, ignore_index=True)
-            saved_df = saved_df.drop_duplicates(subset='date', keep='last')
-            saved_df.date = pd.to_datetime(saved_df.date)
-            self.genDayBar(saved_df, self.path+'/stock1.h5', [])
-        except Exception as e:
-            self.logger.exception('error when getting k data url={} error={}'.format(response.url, e))
 
 
 class dailyIndexEM(Spider):

@@ -13,11 +13,7 @@ import requests
 import scrapy
 from html.parser import HTMLParser
 
-<<<<<<< HEAD
 from sunshine.items.items import NewsItem
-=======
-from sunshine.items import NewsItem
->>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
 from scrapy.spiders import Rule, CrawlSpider
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 

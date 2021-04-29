@@ -3,7 +3,6 @@
 
 # @Time    : 2018/7/26 0:06
 
-<<<<<<< HEAD
 __author__ = 'xujiang@baixing.com'
 
 import time
@@ -58,6 +57,4 @@ def str_to_dict(s, join_symbol="\n", split_symbol=":"):
             k, v = item.split(split_symbol, 1)
             data[k] = v.strip()
     return data
-=======
-__author__ = 'xujiang@baixing.com'
->>>>>>> 1ea7eb54248b7973704616ac1cbad7693a523428
+
