@@ -6,22 +6,31 @@
 """
 import io
 import os
+
+import numpy
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, time
 
 from scrapy import Spider, Request
-from sqlalchemy.orm import sessionmaker
 
-from sunshine.db.basic import get_engine
+from sunshine.db.basic import get_session
 from sunshine.spiders.stock.model import StockInfo, DailyStockData
 
 
 def get_security_list():
-    engine = get_engine()
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    session = get_session()
     d = session.query(StockInfo).all()
     return d
+
+
+def string2datetime64(date_string):
+    """
+    :param date_string: y-m-d
+    :return:
+    """
+    t = time.strptime(date_string, "%Y-%m-%d")
+    y, m, d = t[0:3]
+    return numpy.datetime64(datetime(y, m, d))
     
 
 class dailyStock163Spider(Spider):
@@ -40,44 +49,24 @@ class dailyStock163Spider(Spider):
     def __init__(self, *args, **kwargs):
         super(dailyStock163Spider, self).__init__(*args, **kwargs)
         
-    
-    def get_k_data_url(self, exchange, code, start, end):
-        return 'http://quotes.money.163.com/service/chddata.html?code={}{}&start={}&end={}'.format(
-            exchange, code, start, end)
-    
-    # 指定日期的话，是用来抓增量数据的
-    # 如果需要代理请打开
-    # @random_proxy
-    def yield_request(self, item, start_date=None, end_date=None):
-        if start_date:
-            start = start_date
-        else:
-            start = item.listed_date.replace('-', '')
-        
-        if end_date:
-            end = end_date
-        else:
-            end = datetime.today().strftime('%Y%m%d')
-        
-        if item.exchange == 'XSHG':
-            exchange_flag = 0
-        else:
-            exchange_flag = 1
-        url = self.get_k_data_url(exchange_flag, item.code.split('.')[0], start, end)
-        yield Request(url=url, meta={'item': item},
-                      callback=self.parse_item)
-    
     def start_requests(self):
-        item = getattr(self, "security_item", None)
         start_date = getattr(self, "start_date", None)
         end_date = getattr(self, "end_date", None)
-        if item:
-            for request in self.yield_request(item, start_date, end_date):
-                yield request
-        else:
-            for item in get_security_list():
-                for request in self.yield_request(item, start_date, end_date):
-                    yield request
+        for item in get_security_list():
+            if not start_date:
+                start_date = item.listed_date.replace('-', '')
+            if not end_date:
+                end_date = datetime.today().strftime('%Y%m%d')
+            if item.exchange == 'XSHG':
+                exchange_flag = 0
+            else:
+                exchange_flag = 1
+
+            url = 'http://quotes.money.163.com/service/chddata.html?code={}{}&start={}&end={}'.format(
+                exchange_flag, item.code.split('.')[0], start_date, end_date
+            )
+            yield Request(url=url, meta={'item': item},
+                              callback=self.parse_item)
     
     def parse_item(self, response):
         item = response.meta['item']
@@ -87,7 +76,7 @@ class dailyStock163Spider(Spider):
             for index, row in df.iterrows():
                 stock_daily = DailyStockData()
                 stock_daily['code'] = item.code
-                stock_daily['datetime'] = row['日期']
+                stock_daily['datetime'] = string2datetime64(row['日期'])
                 stock_daily['open'] = row['开盘价']
                 stock_daily['high'] = row['最高价']
                 stock_daily['low'] = row['最低价']

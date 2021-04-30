@@ -4,6 +4,7 @@ from io import BytesIO
 import pandas as pd
 
 from sunshine.spiders.stock.model import StockInfo
+from sunshine.db.basic import get_session
 from scrapy import Request, Spider
 from urllib.parse import urlencode
 
@@ -141,10 +142,8 @@ class StockInfoSHSpider(Spider):
     
 
 class IndexInfoSpider(Spider):
+    
     name = 'index_info'
-
-    def __init__(self, *args, **kwargs):
-        super(IndexInfoSpider, self).__init__(*args, **kwargs)
 
     custom_settings = {
         'ITEM_PIPELINES': {
@@ -153,6 +152,10 @@ class IndexInfoSpider(Spider):
         'SQLITE_PATH': "stock_db",
         'SQLITE_DBNAME': 'stock_info'
     }
+
+    def __init__(self, *args, **kwargs):
+        super(IndexInfoSpider, self).__init__(*args, **kwargs)
+
 
     def start_requests(self):
         url = 'https://www.ricequant.com/doc/rqdata/python/indices-dictionary.html'
@@ -177,20 +180,65 @@ class IndexInfoSpider(Spider):
 # TODO 股票行业获取
 class StockIndustrySpider(Spider):
     
+    name = 'update_industry_name'
+    
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+        },
+        'SQLITE_PATH': "stock_db",
+        'SQLITE_DBNAME': 'stock_info'
+    }
+    
     def __init__(self, *args, **kwargs):
         super(StockIndustrySpider, self).__init__(*args, **kwargs)
     
     def start_requests(self):
-        url = 'http://money.finance.sina.com.cn/q/view/newFLJK.php?param=industry'
-        yield Request(url)
-    
-    def parse(self, response, **kwargs):
-        pass
+        ## 获取基本信息
+        url = 'http://f10.eastmoney.com/CompanySurvey/CompanySurveyAjax?code={}{}'
+        session = get_session()
+        stock_info_list = session.query(StockInfo).filter(StockInfo.type=='CS').all()
+        for stock_info_item in stock_info_list:
+            if not stock_info_item.industry_name or stock_info_item.industry_name:
+                _type ={'XSHG':'SH', 'XSHE':'SZ'}.get(stock_info_item.exchange)
+                code = stock_info_item.code.split('.')[0]
+                yield Request(url.format(_type, code),meta={'code': stock_info_item.code}, callback=self.parse)
 
+    def parse(self, response, **kwargs):
+        res = response.text
+        data = json.loads(res)
+        if data:
+            basic = data.get('jbzl',{}).get('sszjhhy',None)
+            industry_name = basic.split('-')[-1]
+            code = response.meta['code']
+            print(code, industry_name)
+            yield {'code': code, 'industry_name': industry_name}
+            
+
+# TODO 股票板块
+
+# TODO 股票概念
 
 # TODO 股票交易日期获取
 
 
 
 # TODO 指数成分数据
+class IndexComponentsSpider(Spider):
+    name = 'index_components'
+    
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+        },
+        'SQLITE_PATH': "stock_db",
+        'SQLITE_DBNAME': 'stock_info'
+    }
+    
+    def __init__(self, *args, **kwargs):
+        super(IndexComponentsSpider, self).__init__(*args, **kwargs)
+    
+    def start_requests(self):
+        session = get_session()
+
 

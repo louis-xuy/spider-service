@@ -9,7 +9,6 @@ import logging
 
 from sunshine.pipelines.sqlitepipeline import SqlitePipeline
 from sunshine.spiders.stock.model import StockInfo
-from sqlalchemy.orm import sessionmaker
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +41,18 @@ class StockDailyDataPipeline(SqlitePipeline):
             new_item = StockInfo(**item)
             self.session.add(new_item)
             logger.info('New item {} added to DB.'.format(item['code']))
+
+class StockIndustryNamePipeline(SqlitePipeline):
+    
+    def __init__(self, *args, **kwargs):
+        super(StockIndustryNamePipeline, self).__init__(*args, **kwargs)
+    
+    def process_item(self, item, spider):
+        try:
+            stock_info = self.session.query(StockInfo).filter(StockInfo.code.like(item['code']))
+            stock_info.industry_name = item['industry_name']
+        except Exception as e:
+            logger.error("insert item {} fail !".format(item['code']))
+    
+    "P_TYPE['http'] + DOMAINS['oss'] + '/tsdata/%sall%s.csv'" \
+    

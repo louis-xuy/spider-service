@@ -25,4 +25,11 @@ Visit http://127.0.0.1:5000, and log in with the USERNAME/PASSWORD above.
 ```
 rm -rf /data/db/* 
 /usr/local/mongodb/bin/mongod --dbpath=/data/db/ --logpath=/logs/mongodb.log --logappend &
+
+### 获取板块列表
+- 未完成
+
+### 获取行业列表
+
+
 ```

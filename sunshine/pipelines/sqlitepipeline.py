@@ -5,17 +5,13 @@
 @Time: 2021-04-29 13:25
 """
 
-from sunshine.db.basic import get_engine, create_forum_table
-from sqlalchemy.orm import sessionmaker
+from sunshine.db.basic import get_session
 
 
 class SqlitePipeline(object):
     
     def __init__(self, *args, **kwargs):
-        engine = get_engine()
-        create_forum_table(engine)
-        Session = sessionmaker(bind=engine)
-        self.session = Session()
+        self.session = get_session()
 
 
     def open_spider(self, spider):
