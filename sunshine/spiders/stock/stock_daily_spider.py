@@ -5,7 +5,6 @@
 @Time: 2021-04-27 21:13
 """
 import io
-import os
 
 import numpy
 import pandas as pd
@@ -13,12 +12,12 @@ from datetime import datetime, time
 
 from scrapy import Spider, Request
 
-from sunshine.db.basic import get_session
-from sunshine.spiders.stock.model import StockInfo, DailyStockData
+from sunshine.models import loadSession
+from sunshine.models.stock_model import StockInfo, DailyStockData
 
 
 def get_security_list():
-    session = get_session()
+    session = loadSession()
     d = session.query(StockInfo).all()
     return d
 

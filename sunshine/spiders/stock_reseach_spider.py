@@ -5,8 +5,6 @@
 @Time: 2021-02-17 14:00
 """
 
-import io
-import os
 import re
 import json
 import time
@@ -18,7 +16,7 @@ from datetime import datetime
 
 import requests
 from scrapy import Request, Spider
-from sunshine.spiders.stock.stockItems import StockDailyTrade, StockNewsItem
+from sunshine.items.stockItems import StockDailyTrade, StockNewsItem
 
 
 def convert_date_to_int(dt):

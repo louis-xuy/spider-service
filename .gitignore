@@ -1,9 +1,10 @@
 scripts/
 logs/
 gaoxiaojob.json
-.vscode
 .history
 .idea/
 .vscode/
 *.pyc
-
+.gitignore
+venv/
+sunshine/settings.py

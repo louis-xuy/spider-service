@@ -31,5 +31,13 @@ rm -rf /data/db/*
 
 ### 获取行业列表
 
+### 
 
 ```
+
+scrapy crawl stock_info
+scrapy crawl index_info
+
+todo
+
+[1] 指数成分股 

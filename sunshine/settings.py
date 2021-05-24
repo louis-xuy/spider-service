@@ -73,7 +73,7 @@ DEFAULT_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
 }
 
-LOG_FILE = "/logs/scrapy.log"
+LOG_FILE = "D:/workspace/code/spider-service/logs/stock_spider.log"
 
 # STATS_CLASS = 'sunshine.statscol.graphite.RedisGraphiteStatsCollector'
 
@@ -108,3 +108,5 @@ MAIL_USER = 'xu8888jiang@126.com'
 #配置好smtp服务给的密码
 MAIL_PASS = 'ZYCFWACYWJIYLZHI'
 MAIL_SSL=True
+
+ts_token = '52ce20f28dbd5796c6ecf3e40d76a08756de4dd796ed914377596070'

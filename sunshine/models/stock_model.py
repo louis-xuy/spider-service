@@ -7,12 +7,26 @@
 
 
 from sqlalchemy import Column, Integer, String, Float
-from sunshine.db.basic import Base
+from . import Base
+# from scrapy_sqlitem.sqlitem import SqlAlchemyItemMeta
 
+
+class TradeDays(Base):
+    __tablename__ = 'trade_days'
+
+    id = Column(Integer, primary_key=True)
+    exchange = Column(String(16))
+    cal_date = Column(String(16))
+    is_open = Column(String(16))
+
+    def __init__(self, **items):
+        for key in items:
+            if hasattr(self, key):
+                setattr(self, key, items[key])
 
 
 # 股票基本信息
-class StockInfo(dict, Base):
+class StockInfo(Base):
     __tablename__ = 'stock_info'
 
     # 表的结构:
@@ -45,17 +59,40 @@ class StockInfo(dict, Base):
             if hasattr(self, key):
                 setattr(self, key, items[key])
 
+# 股票额外信息
+class ListedStockInfoExt(Base):
+    # 表的名字:
+    __tablename__ = 'listed_stock_info_ext'
 
-class TradeDays(Base):
-    __tablename__ = 'trade_days'
-    
+    # 表的结构:
     id = Column(Integer, primary_key=True)
-    exchange = Column(String(16))
-    cal_date = Column(String(16))
-    is_open = Column(String(16))
+    ts_code = Column(String(16))
+    name = Column(String(16))
+    industry = Column(String(16))
+    area = Column(String(16))
+    trade_date = Column(String(16))
+    list_date = Column(String(16))
+    pe = Column(Float)
+    float_share = Column(Float)
+    total_share = Column(Float)
+    total_assets = Column(Float)
+    liquid_assets = Column(Float)
+    fixed_assets = Column(Float)
+    reserved = Column(Float)
+    reserved_pershare = Column(Float)
+    eps = Column(Float)
+    bvps = Column(Float)
+    pb = Column(Float)
+    undp = Column(Float)
+    per_undp = Column(Float)
+    rev_yoy = Column(Float)
+    profit_yoy = Column(Float)
+    gpr = Column(Float)
+    npr = Column(Float)
+    holder_num = Column(Integer)
 
 
-class DailyStockData(dict, Base):
+class DailyStockData(Base):
     __tablename__ = 'daily_stock'
     
     id = Column(Integer, primary_key=True)
@@ -76,7 +113,7 @@ class DailyStockData(dict, Base):
                 setattr(self, key, items[key])
 
 
-class SuspendedDays(dict, Base):
+class SuspendedDays(Base):
     """停牌信息"""
     __tablename__ = 'suspended_days'
     
@@ -92,7 +129,7 @@ class SuspendedDays(dict, Base):
                 setattr(self, key, items[key])
 
 
-class IndexComponents(dict, Base):
+class IndexComponents(Base):
     """
     指数成分和权重信息
     """
