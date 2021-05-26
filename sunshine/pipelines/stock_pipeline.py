@@ -21,9 +21,13 @@ class TradeDaysPipeline(MysqlPipeline):
 
     def process_item(self, item, spider):
         logger.info('add item:{} into db'.format(item))
-        new_item = TradeDays(**item)
-        self.session.add(new_item)
-        self.session.commit()
+        if self.session.query(TradeDays).filter_by(cal_date=item['calendar']).first():
+            logger.info('item {} is exists in DB.'.format(item['calendar']))
+        else:
+            new_item = TradeDays(**item)
+            self.session.add(new_item)
+            self.session.commit()
+            logger.info('add {} to db'.format(item['calendar']))
 
 
 class StockInfoPipeline(MysqlPipeline):

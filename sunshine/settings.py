@@ -73,7 +73,7 @@ DEFAULT_REQUEST_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
 }
 
-LOG_FILE = "D:/workspace/code/spider-service/logs/stock_spider.log"
+LOG_FILE = "logs/stock_spider.log"
 
 # STATS_CLASS = 'sunshine.statscol.graphite.RedisGraphiteStatsCollector'
 

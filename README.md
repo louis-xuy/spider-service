@@ -1,7 +1,7 @@
 # spider-service
 爬虫
 
-1. 启动 mongo
+1. 启动 mysql
 
 1. qidong proxy_pool
 
@@ -34,10 +34,18 @@ rm -rf /data/db/*
 ### 
 
 ```
-
+### 获取股票基本信息
 scrapy crawl stock_info
+
+### 获取指数基本信息
 scrapy crawl index_info
 
-todo
+### 获取股票交易日列表
+```
+scrapy crawl trade_days -a start_year=2011 -a end_year=2021
+```
+
+###
 
 [1] 指数成分股 
+

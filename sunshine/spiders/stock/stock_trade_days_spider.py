@@ -2,10 +2,7 @@ import datetime
 import json
 
 from scrapy import Request, Spider
-from sunshine.settings import ts_token
-from sunshine.items.stockItems import TradeDaysItem
 from loguru import logger
-
 
 class TradeDays(Spider):
     name = 'trade_days'
