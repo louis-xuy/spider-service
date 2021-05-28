@@ -8,7 +8,8 @@ import io
 
 import numpy
 import pandas as pd
-from datetime import datetime, time
+from datetime import datetime
+import time
 
 from scrapy import Spider, Request
 
@@ -27,10 +28,8 @@ def string2datetime64(date_string):
     :param date_string: y-m-d
     :return:
     """
-    t = time.strptime(date_string, "%Y-%m-%d")
-    y, m, d = t[0:3]
-    return numpy.datetime64(datetime(y, m, d))
-    
+    t = datetime.strptime(date_string, "%Y-%m-%d")
+    return t.strftime('%Y%m%d')+'000000'
 
 class dailyStock163Spider(Spider):
     """历史行情数据获取"""
@@ -39,10 +38,8 @@ class dailyStock163Spider(Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockDailyDataPipeline': 800
         },
-        'SQLITE_PATH': "stock_db",
-        'SQLITE_DBNAME': 'daily_stock'
     }
     
     def __init__(self, *args, **kwargs):
@@ -69,22 +66,24 @@ class dailyStock163Spider(Spider):
     
     def parse_item(self, response):
         item = response.meta['item']
+        code = item.code
         try:
             df = pd.read_csv(io.BytesIO(response.body), encoding='GB2312', na_values='None')
             # 股票数据
             for index, row in df.iterrows():
-                stock_daily = DailyStockData()
-                stock_daily['code'] = item.code
-                stock_daily['datetime'] = string2datetime64(row['日期'])
-                stock_daily['open'] = row['开盘价']
-                stock_daily['high'] = row['最高价']
-                stock_daily['low'] = row['最低价']
-                stock_daily['close'] = row['收盘价']
-                stock_daily['pre_close'] = row['前收盘']
-                stock_daily['volume'] = row['成交量']
-                stock_daily['money'] = row['成交金额']
-                stock_daily['turnover'] = row['换手率']
-                yield stock_daily
+                yield {
+                    'code': code,
+                    'datetime': string2datetime64(row['日期']),
+                    'open': row['开盘价'],
+                    'high': row['最高价'],
+                    'low': row['最低价'],
+                    'close': row['收盘价'],
+                    'pre_close': row['前收盘'],
+                    'volume': row['成交量'],
+                    'money': row['成交金额'],
+                    'turnover': row['换手率']
+                }
+
         except Exception as e:
             self.logger.exception('error when getting k data url={} error={}'.format(response.url, e))
         

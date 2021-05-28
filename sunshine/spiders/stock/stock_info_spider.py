@@ -81,7 +81,7 @@ class StockInfoSHSpider(Spider):
     
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockInfoPipeline': 800
         },
         'SQLITE_PATH': "stock_db",
         'SQLITE_DBNAME': 'stock_info'
@@ -147,7 +147,7 @@ class IndexInfoSpider(Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockInfoPipeline': 800
         },
         'SQLITE_PATH': "stock_db",
         'SQLITE_DBNAME': 'stock_info'
@@ -184,7 +184,7 @@ class StockIndustrySpider(Spider):
     
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockIndustryNamePipeline': 800
         },
     }
     
@@ -235,6 +235,3 @@ class IndexComponentsSpider(Spider):
     
     def start_requests(self):
         pass
-
-
-

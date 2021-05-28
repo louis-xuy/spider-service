@@ -58,6 +58,38 @@ create table stock_basic(
     created_datetime varchar(30) comment '创建时间',
     update_datetime varchar(30) comment '更新时间'
 );
+
+CREATE table listed_stock_info_ext(
+    id int(11) unsigned not null auto_increment comment '主键',
+    code varchar(16) not null comment '股票代码',
+    symbol varchar(16) not null comment '股票名称',
+    area varchar(16) comment '股票区域',
+    industry varchar(16) comment '所属行业',
+    list_date varchar(16)  comment '上市日期',
+    trade_date varchar(16) comment '交易日期',
+    pe float not null default '0.0' comment '市盈率（动）',
+    float_share float not null default '0.0' comment '流通股本（万）',
+    total_share float not null default '0.0' comment '总股本（万）',
+    total_assets float not null default '0.0' comment '总资产（万）',
+    liquid_assets float not null default '0.0' comment '流动资产（万）',
+    fixed_assets float not null default '0.0' comment '固定资产（万）',
+    reserved float not null default '0.0' comment '公积金',
+    reserved_pershare float not null default '0.0' comment '每股公积金',
+    eps float not null default '0.0' comment '每股收益',
+    bvps float not null default '0.0' comment '每股净资产',
+    pb float not null default '0.0' comment '市净率',
+    undp float not null default '0.0' comment '未分配利润',
+    per_undp float not null default '0.0' comment '每股未分配利润',
+    rev_yoy float not null default '0.0' comment '收入同比（%）',
+    profit_yoy float not null default '0.0' comment '利润同比（%）',
+    gpr float not null default '0.0' comment '毛利率（%）',
+    npr float not null default '0.0' comment '净利润率（%）',
+    holder_num int(11) not null default '0' comment '股东人数',
+    update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '上市股票信额外息表';
+
 --
 --
 -- create table stock_finance_lrb(
@@ -91,7 +123,7 @@ create table index_daily(
 
 create table stock_finance_lrb (
     id int(11) unsigned not null auto_increment comment'主键',
-    ts_code varchar(16) not null comment 'tushare上的代码',
+    code varchar(16) not null comment '代码',
     revenue float comment '营业总收入：公司经营所取得的收入总额金融类公司不公布营业总收入，因此 revenue 指标只能使用类似的一个指标-operating_revenue',
     operating_revenue float comment '营业收入：公司经营主要业务所取得的收入总额',
     net_interest_income float comment '利息净收入',

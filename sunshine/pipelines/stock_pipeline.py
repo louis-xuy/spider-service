@@ -8,7 +8,7 @@
 
 from sunshine.pipelines.mysqlpipeline import MysqlPipeline
 from sunshine.models import Base, engine,loadSession
-from sunshine.models.stock_model import StockInfo, TradeDays
+from sunshine.models.stock_model import StockInfo, TradeDays,DailyStockData
 from loguru import logger
 
 
@@ -57,14 +57,15 @@ class StockDailyDataPipeline(MysqlPipeline):
         super(StockDailyDataPipeline, self).__init__(*args, **kwargs)
     
     def process_item(self, item, spider):
-        session = loadSession()
-        item_exists = session.query(StockDailyDataPipeline).filter_by(code=item['code']).first()
+        item_exists = self.session.query(DailyStockData).filter_by(code=item['code'],datetime=item['datetime']).first()
         if item_exists:
-            logger.info('item {} is exists in DB.'.format(item['code']))
+            logger.info('item {} is exists in DB.'.format(item))
         else:
-            new_item = StockInfo(**item)
-            session.add(new_item)
-            logger.info('New item {} added to DB.'.format(item['code']))
+            new_item = DailyStockData(**item)
+            self.session.add(new_item)
+            self.session.commit()
+            logger.info('New item {} added to DB.'.format(item))
+
 
 class StockIndustryNamePipeline(MysqlPipeline):
     
@@ -72,10 +73,11 @@ class StockIndustryNamePipeline(MysqlPipeline):
         super(StockIndustryNamePipeline, self).__init__(*args, **kwargs)
     
     def process_item(self, item, spider):
-        session = loadSession()
         try:
-            stock_info = session.query(StockInfo).filter(StockInfo.code.like(item['code']))
+            stock_info = self.session.query(StockInfo).filter_by(code = item['code'])
             stock_info.industry_name = item['industry_name']
+            self.session.commit()
+            logger.info("update StockInfo table code {} whith Industry Name {}".format(item['code'], item['industry_name']))
         except Exception as e:
             logger.error("insert item {} fail !".format(item['code']))
     
