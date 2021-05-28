@@ -1,7 +1,12 @@
 import datetime
 import traceback
+
+import pymysql
+
+from sunshine.models import Base, engine,loadSession
 from sunshine.utils import color
-from scrapy.utils import log
+from loguru import logger
+
 
 
 class MysqlPipeline(object):
@@ -15,25 +20,23 @@ class MysqlPipeline(object):
             Currently there is no great way to use PyMongo in conjunction with Tornado or Twisted. PyMongo provides built-in connection pooling, so some of the benefits of those frameworks can be achieved just by writing multi-threaded code that shares a MongoClient.
         """
         self.style = color.color_style()
-        try:
-            client = MongoClient(self.MONGODB_SERVER, self.MONGODB_PORT)
-            self.db = client[self.MONGODB_DB]
-        except Exception as e:
-            print(
-                self.style.ERROR("ERROR(SingleMongodbPipeline): %s" % (
-                    str(e), )))
-            traceback.print_exc()
+        self.session = loadSession()
 
     @classmethod
     def from_crawler(cls, crawler):
-        cls.MONGODB_SERVER = crawler.settings.get('SingleMONGODB_SERVER',
-                    'localhost')
-        cls.MONGODB_PORT = crawler.settings.getint('SingleMONGODB_PORT', 27017)
-        cls.MONGODB_DB = crawler.settings.get('SingleMONGODB_DB', 'books_fs')
-        cls.MONGODB_TB = crawler.settings.get('SingleMONGODB_TB', 'article_detail')
+        # db = crawler.settings.get('MYSQL_DB_NAME', 'scrapy_db')
+        # host = crawler.settings.get('MYSQL_HOST', 'localhost')
+        # port = crawler.settings.get('MYSQL_PORT', 3306)
+        # user = crawler.settings.get('MYSQL_USER', 'root')
+        # passwd = crawler.settings.get('MYSQL_PASSWORD', '123456')
         pipe = cls()
         pipe.crawler = crawler
         return pipe
 
+    # 关闭数据库
+    def close_spider(self, spider):
+        self.session.close()
+
+
     def process_item(self, item, spider):
-        
+        pass

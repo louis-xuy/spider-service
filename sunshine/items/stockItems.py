@@ -7,8 +7,15 @@
 
 from scrapy.item import Item, Field
 
-class StockInfoItem(Item):
-    _table_name = 'stock_info'
+
+class TradeDaysItem(Item, dict):
+    exchange = Field()
+    cal_date = Field()
+    is_open = Field()
+
+
+
+class StockInfoItem(Item, dict):
     code = Field()
     industry_code = Field()
     market_tplus = Field()

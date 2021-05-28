@@ -58,35 +58,3 @@ class T66yMongodbPipeline(SingleMongodbPipeline):
             return None
         else:
             self.db[self.MONGODB_TB].insert(dict(item))
-
-
-class StockInfoMongodbPipeline(SingleMongodbPipeline):
-    
-    def process_item(self, item, spider):
-        table = item._table_name
-        if self.db[table].find_one({'secu_code': item['secu_code']}):
-            return None
-        else:
-            self.db[table].insert(dict(item))
-            print('insert {} to mongo'.format(item['secu_code']))
-            
-        article_detail = {
-            'source': item.get('source'),
-            'date': item.get('date', []),
-            'newsId': item.get('newsId', []),
-            'title': item.get('title', ''),
-            'contents': item.get('contents', ''),
-            'url': item.get('url', ''),
-            'comments': item.get('comments', []),
-            'time': item.get('time', ''),
-            'update_time': datetime.datetime.utcnow()
-        }
-
-        result = self.db['article_detail'].insert(article_detail)
-        # item["mongodb_id"] = str(result)
-
-        log.msg("Item %s wrote to MongoDB database %s/book_detail" %
-                (result, self.MONGODB_DB),
-                level=log.DEBUG,
-                spider=spider)
-        return item

@@ -35,4 +35,3 @@ class SqlitePipeline(object):
         finally:
             self.session.close()
 
-    

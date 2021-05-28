@@ -15,8 +15,8 @@ from io import BytesIO
 from bs4 import BeautifulSoup as BS
 import requests
 from scrapy import Request, FormRequest, Spider
-from Crypto.Cipher import AES   # 用于AES解码
-from PIL import Image
+# from Crypto.Cipher import AES   # 用于AES解码
+#from PIL import Image
 from rich.progress import Progress
 
 

@@ -2,7 +2,6 @@
 # -*-coding:utf-8-*-
 
 from sunshine.utils import color
-from sunshine.pipelines.bookfile import NofilesDrop
 
 
 class DropNoneBookFile(object):

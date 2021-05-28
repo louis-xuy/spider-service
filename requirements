@@ -1,2 +1,6 @@
 scrapy
 mongoengine==0.15.3
+pymysql
+rich
+PIL
+Crypto

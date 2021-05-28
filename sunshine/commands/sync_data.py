@@ -7,7 +7,7 @@
 
 import pandas as ts
 
-from sunshine.spiders.stock.model import TradeDays
+from sunshine.models.stock_model import TradeDays
 from sunshine.db.basic import get_engine
 from sqlalchemy.orm import sessionmaker
 

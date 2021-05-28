@@ -2,12 +2,13 @@ import time
 import json
 from io import BytesIO
 import pandas as pd
-
-from sunshine.spiders.stock.model import StockInfo
-from sunshine.db.basic import get_session
+from sunshine.models import loadSession
+from sunshine.models.stock_model import StockInfo
+from sunshine.items.stockItems import StockInfoItem
 from scrapy import Request, Spider
 from urllib.parse import urlencode
 
+from loguru import logger
 
 class StockInfoSZSpider(Spider):
     """
@@ -17,9 +18,9 @@ class StockInfoSZSpider(Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockInfoPipeline': 800
         },
-        'SQLITE_PATH': "stock_db",
+        'SQLITE_PATH': "stock",
         'SQLITE_DBNAME': 'stock_info'
     }
     
@@ -44,15 +45,14 @@ class StockInfoSZSpider(Spider):
                 "TABKEY": indicator,
                 "random": "0.6935816432433362",
             }
-            print(url+urlencode(params))
             yield Request(url+urlencode(params), callback=self.parse_item, meta={'type': name})
     
     def parse_item(self, response):
         _type = response.meta['type']
-        df = pd.read_excel(BytesIO(response.body), engine="xlrd")
+        df = pd.read_excel(BytesIO(response.body), engine="openpyxl")
         if df.shape[0] > 0:
             for index, data in df.iterrows():
-                stock_info = StockInfo()
+                stock_info = StockInfoItem()
                 stock_info['code'] = str(data['A股代码']).rjust(6, '0')+'.XSHE'
                 stock_info['fullname'] = data['公司全称']
                 stock_info['symbol'] = data['A股简称']
@@ -81,7 +81,7 @@ class StockInfoSHSpider(Spider):
     
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockInfoPipeline': 800
         },
         'SQLITE_PATH': "stock_db",
         'SQLITE_DBNAME': 'stock_info'
@@ -124,7 +124,7 @@ class StockInfoSHSpider(Spider):
         datas = j_list.get('result')
         if datas:
             for data in datas:
-                stock_info = StockInfo()
+                stock_info = StockInfoItem()
                 stock_info['code'] = data['SECURITY_CODE_A'] + '.XSHG'
                 stock_info['symbol'] = data['COMPANY_ABBR']
                 stock_info['listed_date'] = data['LISTING_DATE']
@@ -147,7 +147,7 @@ class IndexInfoSpider(Spider):
 
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockInfoPipeline': 800
         },
         'SQLITE_PATH': "stock_db",
         'SQLITE_DBNAME': 'stock_info'
@@ -164,7 +164,7 @@ class IndexInfoSpider(Spider):
     def parse(self, response, **kwargs):
         links = response.xpath('//div/table/tbody/tr')
         for link in links:
-            index_info = StockInfo()
+            index_info = StockInfoItem()
             index_info['code'] = code = link.xpath("./td[1]//text()").get()
             index_info['symbol'] = link.xpath("./td[2]//text()").get()
             index_info['fullname'] = link.xpath("./td[3]//text()").get()
@@ -184,10 +184,8 @@ class StockIndustrySpider(Spider):
     
     custom_settings = {
         'ITEM_PIPELINES': {
-            'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
+            'sunshine.pipelines.stock_pipeline.StockIndustryNamePipeline': 800
         },
-        'SQLITE_PATH': "stock_db",
-        'SQLITE_DBNAME': 'stock_info'
     }
     
     def __init__(self, *args, **kwargs):
@@ -196,7 +194,7 @@ class StockIndustrySpider(Spider):
     def start_requests(self):
         ## 获取基本信息
         url = 'http://f10.eastmoney.com/CompanySurvey/CompanySurveyAjax?code={}{}'
-        session = get_session()
+        session = loadSession()
         stock_info_list = session.query(StockInfo).filter(StockInfo.type=='CS').all()
         for stock_info_item in stock_info_list:
             if not stock_info_item.industry_name or stock_info_item.industry_name:
@@ -211,16 +209,15 @@ class StockIndustrySpider(Spider):
             basic = data.get('jbzl',{}).get('sszjhhy',None)
             industry_name = basic.split('-')[-1]
             code = response.meta['code']
-            print(code, industry_name)
             yield {'code': code, 'industry_name': industry_name}
             
 
 # TODO 股票板块
 
+
 # TODO 股票概念
 
 # TODO 股票交易日期获取
-
 
 
 # TODO 指数成分数据
@@ -231,14 +228,10 @@ class IndexComponentsSpider(Spider):
         'ITEM_PIPELINES': {
             'sunshine.spiders.stock.pipelines.StockInfoPipeline': 800
         },
-        'SQLITE_PATH': "stock_db",
-        'SQLITE_DBNAME': 'stock_info'
     }
     
     def __init__(self, *args, **kwargs):
         super(IndexComponentsSpider, self).__init__(*args, **kwargs)
     
     def start_requests(self):
-        session = get_session()
-
-
+        pass

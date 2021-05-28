@@ -8,12 +8,12 @@
 from io import BytesIO
 import pandas as pd
 from scrapy import Request, Spider
-from sunshine.db.basic import get_session
-from sunshine.spiders.stock.model import StockInfo
+from sunshine.models import loadSession
+from sunshine.models.stock_model import StockInfo
 
 
 def get_security_list():
-    session = get_session()
+    session = loadSession()
     d = session.query(StockInfo).filter(StockInfo.type=='CS').all()
     return d
 

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="stock" uuid="9146377b-90db-44de-86d2-f7b44a6f6318">
-      <driver-ref>sqlite.xerial</driver-ref>
+    <data-source source="LOCAL" name="@localhost" uuid="a2dd0747-9796-4821-be3c-1f0d2778fb1d">
+      <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:/data/stock_db/stock.db</jdbc-url>
+      <remarks>stock</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
       <driver-properties>
-        <property name="enable_load_extension" value="true" />
+        <property name="serverTimezone" value="Asia/Shanghai" />
       </driver-properties>
     </data-source>
   </component>
